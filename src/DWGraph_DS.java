@@ -12,7 +12,7 @@ public class DWGraph_DS implements directed_weighted_graph {
 	public static class NodeData implements node_data {
 
 		// each node will contain the edges related to it directing an edge as a source.
-		private HashMap<Integer, edge_data> edges = new HashMap<Integer, edge_data>(); // node: key, node: data.
+		private HashMap<Integer, edge_data> edges = new HashMap<Integer, edge_data>(); // node: 'key' (dest), node: data.
 		private String info;
 		private int tag;
 		private int key;
@@ -29,6 +29,10 @@ public class DWGraph_DS implements directed_weighted_graph {
 			return (Collection<edge_data>) edges.values();
 		}
 
+		// return the keys of the neighboors from the node has a source of the edges.
+		public Collection<Integer> getKeys(){
+			return (Collection<Integer>) edges.keySet();
+		}
 		// adds an edge to the HashMap has the dest from the current node.  
 		public void addEdge(int dest, double w) {
 			edges.put(dest, new EdgeData(this.key, dest, w));
@@ -138,8 +142,8 @@ public class DWGraph_DS implements directed_weighted_graph {
 	}
 	private HashMap<Integer, node_data> nodes = new HashMap<Integer, node_data>();
 	
-	private int amountOfEdges = 0;
-	private int modeCount = 0;
+	public int amountOfEdges = 0;
+	public int modeCount = 0;
 	
 	@Override
 	public node_data getNode(int key) {
@@ -168,6 +172,20 @@ public class DWGraph_DS implements directed_weighted_graph {
 		amountOfEdges++;
 	}
 
+	// return the neigboors collection of this specific key (node).
+	public Collection<node_data> getV(int key) {
+		Collection<Integer> keys = ((NodeData)getNode(key)).getKeys();
+		Iterator<Integer> iterator = keys.iterator();
+		 
+		Collection<node_data> neighboors = null;
+		while (iterator.hasNext()) {
+			int nodeKey = iterator.next();
+		    neighboors.add(getNode(nodeKey));
+		}
+		
+		return neighboors;
+	}
+	
 	@Override
 	public Collection<node_data> getV() {
 		return (Collection<node_data>) nodes.values();
