@@ -1,14 +1,23 @@
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Queue;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import api.directed_weighted_graph;
 import api.dw_graph_algorithms;
+import api.edge_data;
 import api.node_data;
 
 public class DWGraph_Algo implements dw_graph_algorithms {
@@ -123,6 +132,7 @@ public class DWGraph_Algo implements dw_graph_algorithms {
 		return -1; // path doesn't exists.
 	}
 
+	// we allocate nodes using an helper HashMap to indicate its parent in the BFS search once we found the dest we reverse the order and create a list from it.
 	@Override
 	public List<node_data> shortestPath(int src, int dest) {
 		if(this.graph==null || this.graph.getNode(dest)==null || this.graph.getNode(src)==null) return null;
@@ -182,10 +192,68 @@ public class DWGraph_Algo implements dw_graph_algorithms {
 		return null;
 	}
 
+	
 	@Override
 	public boolean save(String file) {
-		// TODO Auto-generated method stub
-		return false;
+		
+		try {
+			// creating JSONObject 
+	        JSONObject jo = new JSONObject(); 
+	        
+	        // Firstly, we will create an array for the nodes:
+	        JSONArray nodeArray = new JSONArray(); 
+	        Map<String, Object> nodeMap = new HashMap<String, Object>();
+	        Map<String, Object> locationMap = new HashMap<String, Object>();
+	        
+	        JSONArray edgeArray = new JSONArray(); 
+	        Map<String, Object> edgeMap = new HashMap<String, Object>();
+	        
+	        for(node_data node : this.graph.getV())
+	        {
+	        	nodeMap.put("Info", node.getInfo());
+	        	nodeMap.put("Tag", node.getTag());
+	        	nodeMap.put("Key", node.getKey());
+	        	nodeMap.put("Weight", node.getWeight());
+
+
+		        locationMap.put("X", node.getLocation().x());
+		        locationMap.put("Y", node.getLocation().y());
+		        locationMap.put("Z", node.getLocation().z());
+		        nodeMap.put("Location", locationMap);
+		        
+		        for(edge_data edge : ((DWGraph_DS)graph).getE(node.getKey()))
+		        {
+		        	edgeMap.put("Source", edge.getSrc());
+		        	edgeMap.put("Destination", edge.getDest());
+		        	edgeMap.put("Tag", edge.getTag());
+		        	edgeMap.put("Info", edge.getInfo());
+		        	edgeMap.put("Weight", edge.getWeight());
+		        	
+		        	edgeArray.put(edgeMap);
+		        }
+		        nodeMap.put("Edges", edgeMap);
+	
+		        // adding map to list 
+		        nodeArray.put(nodeMap); 
+			}
+	        jo.put("Nodes", nodeArray); 
+	        jo.put("amountOfEdges", ((DWGraph_DS)graph).amountOfEdges);
+	        jo.put("modeCount", ((DWGraph_DS)graph).modeCount);
+	        
+	        // writing JSON to file.
+	        PrintWriter pw = new PrintWriter(file); 
+	        pw.write(jo.toString()); 
+
+	        pw.flush(); 
+	        pw.close(); 
+		}
+		catch(FileNotFoundException | JSONException e)
+		{
+			System.out.println("failed!");
+			 return false;
+		}
+		System.out.println("finished!");
+		return true;
 	}
 
 	@Override

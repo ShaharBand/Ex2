@@ -18,7 +18,7 @@ public class DWGraph_DS implements directed_weighted_graph {
 		private int key;
 		private double weight;
 		private double counter; //counter for weight in algorithm
-		private geo_location location;
+		private GeoLocation location = new GeoLocation();
 		
 		public double getCounter() {
 			return this.counter;
@@ -86,7 +86,7 @@ public class DWGraph_DS implements directed_weighted_graph {
 
 		@Override
 		public void setLocation(geo_location p) {
-			this.location = p;
+			this.location = (GeoLocation)p;
 		}
 
 		@Override
@@ -148,6 +148,37 @@ public class DWGraph_DS implements directed_weighted_graph {
 			this.tag = t;
 		}
 	}
+	
+	public static class GeoLocation implements geo_location {
+
+		private double x = 0;
+		private double y = 0;
+		private double z = 0;
+		
+		@Override
+		public double x() {
+			return this.x;
+		}
+
+		@Override
+		public double y() {
+			return this.y;
+		}
+
+		@Override
+		public double z() {
+			return this.z;
+		}
+		@Override
+		public double distance(geo_location g) {
+	        double dx = this.x() - g.x();
+	        double dy = this.y() - g.y();
+	        double dz = this.z() - g.z();
+	        double t = (dx*dx+dy*dy+dz*dz);
+	        return Math.sqrt(t);
+		}
+	}
+	
 	private HashMap<Integer, node_data> nodes = new HashMap<Integer, node_data>();
 	
 	public int amountOfEdges = 0;
