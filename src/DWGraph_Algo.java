@@ -1,11 +1,14 @@
 import java.util.ArrayDeque;
 import java.util.Iterator;
 import java.util.List;
+import java.util.PriorityQueue;
 import java.util.Queue;
 
 import api.directed_weighted_graph;
 import api.dw_graph_algorithms;
 import api.node_data;
+import src.node_info;
+import src.WGraph_Algo.TagComparator;
 
 public class DWGraph_Algo implements dw_graph_algorithms {
 
@@ -73,10 +76,45 @@ public class DWGraph_Algo implements dw_graph_algorithms {
 		return true;
 	}
 
+   /**
+    * returns the shortest distance between 2 nodes in the graph by using BFS search with Priority Queue.
+    * by using the tag we can calculate the distance value of each node and by going through the search using Priority Queue
+    * this logic becomes Dijkstra's Algorithm!
+    * @param src - starting node
+	* @param dest - finish node
+	* @return the distance (Double).
+	*/
 	@Override
 	public double shortestPathDist(int src, int dest) {
-		// TODO Auto-generated method stub
-		return 0;
+		if(this.algoGraph.nodeSize() < 2)return 0;
+		resetGraph();
+		
+		PriorityQueue<node_info> pq = new PriorityQueue<>(new TagComparator()); 	
+		node_info currentNode = algoGraph.getNode(src), neighboor;
+		currentNode.setTag(0);
+		pq.add(currentNode);
+		
+		while(!pq.isEmpty()) {
+			currentNode = pq.poll();
+			
+			Iterator<node_info> iterator = this.algoGraph.getV(currentNode.getKey()).iterator();
+			while (iterator.hasNext()) {
+			    neighboor = iterator.next();  
+				
+				if(neighboor.getTag() == -1 || pq.contains(neighboor))
+			    {
+					if(pq.contains(neighboor))
+					{
+						if(neighboor.getTag() < currentNode.getTag() + this.algoGraph.getEdge(currentNode.getKey(), neighboor.getKey()))
+							continue;
+					}
+			    	neighboor.setTag(currentNode.getTag()+this.algoGraph.getEdge(currentNode.getKey(), neighboor.getKey()));
+			    	if(neighboor.getKey() == dest)return neighboor.getTag();
+			    	pq.add(neighboor);
+			    }
+			}
+		}
+		return -1; // path doesn't exists.
 	}
 
 	@Override
