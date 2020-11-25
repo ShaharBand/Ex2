@@ -17,7 +17,15 @@ public class DWGraph_DS implements directed_weighted_graph {
 		private int tag;
 		private int key;
 		private double weight;
+		private double counter; //counter for weight in algorithm
 		private geo_location location;
+		
+		public double getCounter() {
+			return this.counter;
+		}
+		public void setCounter(double c) {
+			this.counter = c;
+		}
 
 		// return the edge from current node to 'key' as dest.
 		public edge_data getEdge(int key) {
@@ -239,6 +247,13 @@ public class DWGraph_DS implements directed_weighted_graph {
 	@Override
 	public int getMC() {
 		return this.modeCount;
+	}
+	
+	public double getCounter(int key) {
+		return ((NodeData)getNode(key)).getCounter();
+	}
+	public void setCounter(int key, double c) {
+		((NodeData)getNode(key)).setCounter(c);
 	}
 
 }
