@@ -8,7 +8,7 @@ import java.util.Collection;
  * (should NOT be based on a n*n matrix).
  *
  */
-// shahar band was here!!!
+// shahar band the *gay* was here!!!
 public interface directed_weighted_graph {
 	/**
 	 * returns the node_data by the node_id,
