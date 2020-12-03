@@ -1,1 +1,1 @@
-{"Nodes":[{"Tag":51,"Info":"shalom","Edges":{},"Key":0,"Weight":2,"Location":{"X":0,"Y":0,"Z":0}}],"amountOfEdges":0,"modeCount":1}
+{"Edges":[{"src":0,"w":3.21,"dest":1},{"src":1,"w":3,"dest":0}],"Nodes":[{"pos":"0.0,0.0,0.0","id":0},{"pos":"0.0,0.0,0.0","id":1}]}

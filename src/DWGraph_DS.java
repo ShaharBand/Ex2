@@ -11,6 +11,7 @@ public class DWGraph_DS implements directed_weighted_graph {
 
 	public static class NodeData implements node_data {
 
+		public static int keyCounter = 0;
 		// each node will contain the edges related to it directing an edge as a source.
 		private HashMap<Integer, edge_data> edges = new HashMap<Integer, edge_data>(); // node: 'key' (dest), node: data.
 		private String info;
@@ -19,6 +20,11 @@ public class DWGraph_DS implements directed_weighted_graph {
 		private double weight;
 		private double counter; //counter for weight in algorithm
 		private GeoLocation location = new GeoLocation();
+		
+		public NodeData(){
+			this.key = keyCounter;
+			keyCounter++;
+		}
 		
 		public double getCounter() {
 			return this.counter;
@@ -29,6 +35,7 @@ public class DWGraph_DS implements directed_weighted_graph {
 
 		// return the edge from current node to 'key' as dest.
 		public edge_data getEdge(int key) {
+			if(!edges.containsKey(key))return null;
 			return edges.get(key);
 		}
 		
@@ -43,7 +50,7 @@ public class DWGraph_DS implements directed_weighted_graph {
 		}
 		// adds an edge to the HashMap has the dest from the current node.  
 		public void addEdge(int dest, double w) {
-			edges.put(dest, new EdgeData(this.key, dest, w));
+			edges.put(dest, new EdgeData(key, dest, w));
 		}
 		
 		// removes an edge from the HashMap of edges.
@@ -205,7 +212,7 @@ public class DWGraph_DS implements directed_weighted_graph {
 
 	@Override
 	public void connect(int src, int dest, double w) {
-		if(!nodes.containsKey(src) || !nodes.containsKey(dest)) return;
+		if(!nodes.containsKey(src) || !nodes.containsKey(dest) || src == dest) return;
 		((NodeData)getNode(src)).addEdge(dest, w);
 		modeCount++;
 		amountOfEdges++;

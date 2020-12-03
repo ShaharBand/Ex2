@@ -203,42 +203,39 @@ public class DWGraph_Algo implements dw_graph_algorithms {
 	        // Firstly, we will create an array for the nodes:
 	        JSONArray nodeArray = new JSONArray(); 
 	        Map<String, Object> nodeMap = new HashMap<String, Object>();
-	        Map<String, Object> locationMap = new HashMap<String, Object>();
-	        
+	       
 	        JSONArray edgeArray = new JSONArray(); 
 	        Map<String, Object> edgeMap = new HashMap<String, Object>();
 	        
 	        for(node_data node : this.graph.getV())
 	        {
-	        	nodeMap.put("Info", node.getInfo());
+	        	String geoLocation = node.getLocation().x() + "," + node.getLocation().y() + "," + node.getLocation().z();
+		        nodeMap.put("pos", geoLocation);
+	        	nodeMap.put("id", node.getKey());
+
+	        	/*nodeMap.put("Info", node.getInfo());
 	        	nodeMap.put("Tag", node.getTag());
-	        	nodeMap.put("Key", node.getKey());
-	        	nodeMap.put("Weight", node.getWeight());
-
-
-		        locationMap.put("X", node.getLocation().x());
-		        locationMap.put("Y", node.getLocation().y());
-		        locationMap.put("Z", node.getLocation().z());
-		        nodeMap.put("Location", locationMap);
+	        	nodeMap.put("Weight", node.getWeight());*/
 		        
 		        for(edge_data edge : ((DWGraph_DS)graph).getE(node.getKey()))
 		        {
-		        	edgeMap.put("Source", edge.getSrc());
-		        	edgeMap.put("Destination", edge.getDest());
-		        	edgeMap.put("Tag", edge.getTag());
-		        	edgeMap.put("Info", edge.getInfo());
-		        	edgeMap.put("Weight", edge.getWeight());
+		        	edgeMap.put("src", edge.getSrc());
+		        	edgeMap.put("w", edge.getWeight());
+		        	edgeMap.put("dest", edge.getDest());
+		        	
+		        	/*edgeMap.put("Tag", edge.getTag());
+		        	edgeMap.put("Info", edge.getInfo());*/
 		        	
 		        	edgeArray.put(edgeMap);
 		        }
-		        nodeMap.put("Edges", edgeMap);
 	
 		        // adding map to list 
 		        nodeArray.put(nodeMap); 
 			}
+	        jo.put("Edges", edgeArray);
 	        jo.put("Nodes", nodeArray); 
-	        jo.put("amountOfEdges", ((DWGraph_DS)graph).amountOfEdges);
-	        jo.put("modeCount", ((DWGraph_DS)graph).modeCount);
+	        /*jo.put("amountOfEdges", ((DWGraph_DS)graph).amountOfEdges);
+	        jo.put("modeCount", ((DWGraph_DS)graph).modeCount);*/
 	        
 	        // writing JSON to file.
 	        PrintWriter pw = new PrintWriter(file); 
