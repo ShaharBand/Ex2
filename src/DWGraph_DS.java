@@ -1,6 +1,7 @@
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 
 import api.directed_weighted_graph;
 import api.edge_data;
@@ -43,15 +44,14 @@ public class DWGraph_DS implements directed_weighted_graph {
 
 	// return the neighbors collection of this specific key (node).
 	public Collection<node_data> getV(int key) {
-		Collection<Integer> keys = ((NodeData)getNode(key)).getKeys();
-		Iterator<Integer> iterator = keys.iterator();
-		 
-		Collection<node_data> neighbors = null;
-		while (iterator.hasNext()) {
-			int nodeKey = iterator.next();
-			neighbors.add(getNode(nodeKey));
-		}
+		Iterator<edge_data> iterator = ((NodeData)getNode(key)).getEdges().iterator();
+		Collection<node_data> neighbors =  new LinkedList<node_data>(); 
 		
+		while(iterator.hasNext()) {
+			edge_data currentEdge = iterator.next();
+			neighbors.add(getNode(currentEdge.getDest()));
+		}
+
 		return neighbors;
 	}
 	

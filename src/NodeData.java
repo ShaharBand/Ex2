@@ -56,10 +56,6 @@ public class NodeData implements node_data {
 		return (Collection<edge_data>) edges.values();
 	}
 
-	// return the keys of the neighbors from the node has a source of the edges.
-	public Collection<Integer> getKeys(){
-		return (Collection<Integer>) edges.keySet();
-	}
 	// adds an edge to the HashMap has the dest from the current node.  
 	public void addEdge(int dest, double w) {
 		edges.put(dest, new EdgeData(key, dest, w));

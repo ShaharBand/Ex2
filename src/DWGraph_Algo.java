@@ -67,42 +67,70 @@ public class DWGraph_Algo implements dw_graph_algorithms {
 		return deep;
 	}
 
-	// BFS from each node to test the connectivity of each direction.
+	// DFS, doing a BFS on a node, then fliping the edges and doing it again.
 	@Override
 	public boolean isConnected() {
 		if(this.graph.nodeSize() < 2)return true;
 		
-		int counter = 0;
-		Queue<node_data> queue = new ArrayDeque<>();
+		int src = this.graph.getV().iterator().next().getKey();
+		if(!BFS_isConnected(src,this))
+			return false;
 		
-		for(int i = 0; i < graph.nodeSize(); i++)
+		DWGraph_DS g = (DWGraph_DS) copy();
+		
+		FlipGraph();
+		if(!BFS_isConnected(src,this))
 		{
-			queue.clear();
-			resetGraph();
-			counter = 0;
-			
-			node_data currentNode = this.graph.getNode(i), neighbor;
-			queue.add(currentNode);
-			
-			while(!queue.isEmpty()) {
-				currentNode = queue.remove();
-				
-				Iterator<node_data> iterator = ((DWGraph_DS)this.graph).getV(currentNode.getKey()).iterator();
-				while (iterator.hasNext()) {
-					neighbor = iterator.next();
-				    
-					if(neighbor.getTag() == -1) {
-				    	queue.add(neighbor);
-				    	neighbor.setTag(1);
-				    	counter++;
-				    }
-				}
-			}
-			if(counter != graph.nodeSize())return false;
+			init(g);
+			return false;
 		}
+		
+		init(g);
 		return true;
 	}
+	
+	private void FlipGraph()
+	{
+		node_data currentNode;
+		
+		Iterator<node_data> iterator = this.graph.getV().iterator();
+		while(iterator.hasNext())
+		{
+			currentNode = iterator.next();
+			Iterator<edge_data> iterator2 = this.graph.getE(currentNode.getKey()).iterator();
+			while(iterator2.hasNext()) {
+				edge_data currentEdge = iterator2.next();
+				this.graph.removeEdge(currentEdge.getSrc(), currentEdge.getDest());
+				this.graph.connect(currentEdge.getSrc(), currentEdge.getDest(), currentEdge.getWeight());
+			}
+		}
+	}
+	private boolean BFS_isConnected(int src, DWGraph_Algo ga)
+	{
+		int counter = 0;
+		Queue<node_data> queue = new ArrayDeque<>();
+		ga.resetGraph();
+		counter = 0;
+				
+		node_data currentNode = ga.getGraph().getV().iterator().next(), neighbor;
+		queue.add(currentNode);
+	
+		while(!queue.isEmpty()) {
+			currentNode = queue.remove();
+			Iterator<node_data> iterator = ((DWGraph_DS)ga.getGraph()).getV(currentNode.getKey()).iterator();
 
+			while (iterator.hasNext()) {
+				neighbor = iterator.next();
+				if(neighbor.getTag() == -1) {
+				 	queue.add(neighbor);
+				 	neighbor.setTag(1);
+					counter++;
+				}
+			}
+		}
+		if(counter != ga.getGraph().nodeSize())return false;
+		return true;
+	}
     // returns the shortest distance between 2 nodes in the graph by using BFS search with Priority Queue.
     // by using the tag we can calculate the distance value of each node and by going through the search using Priority Queue
     // this logic becomes Dijkstra's Algorithm!
