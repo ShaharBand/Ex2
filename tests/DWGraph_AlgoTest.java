@@ -7,16 +7,17 @@ class DWGraph_AlgoTest {
 	@Test
 	void SaveTest() {
 		DWGraph_DS g = new DWGraph_DS();
-		node_data node1 = new DWGraph_DS.NodeData();
+		node_data node1 = new NodeData();
 		node1.setWeight(2);
 		node1.setInfo("shalom");
 		node1.setTag(51);
 		g.addNode(node1);
 		
-		node_data node2 = new DWGraph_DS.NodeData();
+		node_data node2 = new NodeData();
 		node2.setWeight(2);
 		node2.setInfo("shalom2");
 		node2.setTag(51);
+		node2.setLocation(new GeoLocation("1, 1, 1"));
 		g.addNode(node2);
 		
 		g.connect(node1.getKey(), node2.getKey(), 3.21);	
@@ -25,7 +26,9 @@ class DWGraph_AlgoTest {
 		
 		DWGraph_Algo ga = new DWGraph_Algo();
 		ga.init(g);
-		ga.save("Test.json");
+		ga.save("data/Test.json");
+		
+		ga.load("data/Test.json");
 	}
 
 }
