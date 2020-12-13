@@ -147,24 +147,24 @@ public class DWGraph_Algo implements dw_graph_algorithms {
 		
 		while(!pq.isEmpty()) {
 			currentNode = pq.poll();
-			
+	    	if(currentNode.getKey() == dest)return ((NodeData)currentNode).getCounter();
+	    	
 			Iterator<node_data> iterator = ((DWGraph_DS)this.graph).getV(currentNode.getKey()).iterator();
 			while (iterator.hasNext()) {
 			    neighbor = iterator.next();  
 				
-				if(((DWGraph_DS)graph).getCounter(neighbor.getKey()) == -1 || pq.contains(neighbor)) {
+				if(((NodeData)neighbor).getCounter() == -1 || pq.contains(neighbor)) {
 					
 					// value of the path weight
-					double weightValue=neighbor.getWeight() + 
-							((DWGraph_DS)graph).getCounter(currentNode.getKey()) + 
+					double weightValue=//neighbor.getWeight() + 
+							((NodeData)currentNode).getCounter() + 
 							((DWGraph_DS)graph).getEdge(currentNode.getKey(), neighbor.getKey()).getWeight();
 					
 					if(pq.contains(neighbor)) {
-						if(((DWGraph_DS)graph).getCounter(neighbor.getKey()) < weightValue) continue;
+						if(((NodeData)neighbor).getCounter() < weightValue) continue;
 					}
 									
-					((DWGraph_DS)graph).setCounter(neighbor.getKey(), weightValue);
-			    	if(neighbor.getKey() == dest)return ((DWGraph_DS)graph).getCounter(neighbor.getKey());
+					((NodeData)neighbor).setCounter(weightValue);
 			    	pq.add(neighbor);
 			    }
 			}
