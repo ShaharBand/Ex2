@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
@@ -318,9 +317,11 @@ public class DWGraph_Algo implements dw_graph_algorithms {
 		}
 		catch (FileNotFoundException e) {
 			e.printStackTrace();
-		} catch (JSONException e) {
+		} 
+		catch (JSONException e) {
 			e.printStackTrace();
-		} catch (IOException e) {
+		} 
+		catch (IOException e) {
 			e.printStackTrace();
 		}
 		return false;
