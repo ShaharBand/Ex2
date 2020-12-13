@@ -1,3 +1,5 @@
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
 
 import api.node_data;
@@ -60,5 +62,4 @@ class DWGraph_AlgoTest {
 		double val = ga.shortestPathDist(node1.getKey(),node3.getKey());
 		System.out.println(val);
 	}
-
 }

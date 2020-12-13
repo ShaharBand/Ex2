@@ -193,6 +193,21 @@ public class DWGraph_Algo implements dw_graph_algorithms {
 		while(!pq.isEmpty()) {
 			currentNode = pq.poll();
 			
+			if(currentNode.getKey() == dest) { // found --> go by the helping HashMap and find parents from bottom to top and put them in the list.
+				List<node_data> path = new ArrayList<node_data>();
+		        while(currentNode != graph.getNode(src)) { //while we have parent
+		        	path.add(currentNode);
+		        	currentNode = parents.get(currentNode.getKey());
+		        }
+		        path.add(graph.getNode(src));
+		        // reverse order to top to bottom:
+		        List<node_data> path2 = new ArrayList<node_data>(); 
+		        for (int i = path.size()-1; i >= 0; i--) 
+		        	path2.add(path.get(i)); 
+		        
+		        return path2;
+			}	
+			
 			Iterator<node_data> iterator = ((DWGraph_DS)this.graph).getV(currentNode.getKey()).iterator();
 			while (iterator.hasNext()) {
 			    neighbor = iterator.next();  
@@ -200,32 +215,17 @@ public class DWGraph_Algo implements dw_graph_algorithms {
 				if(((DWGraph_DS)graph).getCounter(neighbor.getKey()) == -1 || pq.contains(neighbor)) {
 					
 					// value of the path weight
-					double weightValue=neighbor.getWeight() + 
-							((DWGraph_DS)graph).getCounter(currentNode.getKey()) + 
+					double weightValue=//neighbor.getWeight() + 
+							((NodeData)currentNode).getCounter() + 
 							((DWGraph_DS)graph).getEdge(currentNode.getKey(), neighbor.getKey()).getWeight();
 					
 					if(pq.contains(neighbor)) {
 						if(((DWGraph_DS)graph).getCounter(neighbor.getKey()) < weightValue) continue;
 					}
 									
-					((DWGraph_DS)graph).setCounter(neighbor.getKey(), weightValue);
+					((NodeData)neighbor).setCounter(weightValue);
 					parents.put(neighbor.getKey(), currentNode); // Making a HashMap where the parent is contained in the key of its child's
-					
-					if(neighbor.getKey() == dest) { // found --> go by the helping HashMap and find parents from bottom to top and put them in the list.
-						List<node_data> path = new ArrayList<node_data>();
-						currentNode = neighbor;
-				        while(currentNode != graph.getNode(src)) { //while we have parent
-				        	path.add(currentNode);
-				        	currentNode = parents.get(currentNode.getKey());
-				        }
-				        path.add(graph.getNode(src));
-				        // reverse order to top to bottom:
-				        List<node_data> path2 = new ArrayList<node_data>(); 
-				        for (int i = path.size()-1; i >= 0; i--) 
-				        	path2.add(path.get(i)); 
-				        
-				        return path2;
-					}		
+				
 			    	pq.add(neighbor);
 			    }
 			}
@@ -236,7 +236,6 @@ public class DWGraph_Algo implements dw_graph_algorithms {
 	
 	@Override
 	public boolean save(String file) {
-		
 		try {
 			// creating JSONObject 
 	        JSONObject jo = new JSONObject(); 
