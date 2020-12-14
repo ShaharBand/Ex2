@@ -1,9 +1,6 @@
+package api;
 import java.util.Collection;
 import java.util.HashMap;
-
-import api.edge_data;
-import api.geo_location;
-import api.node_data;
 
 public class NodeData implements node_data {
 	public static int keyCounter = 0;

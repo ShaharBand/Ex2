@@ -43,6 +43,7 @@ public class MyFrame extends JFrame{
 	public void paint(Graphics g) {
 		int w = this.getWidth();
 		int h = this.getHeight();
+		
 		g.clearRect(0, 0, w, h);
 	//	updateFrame();
 		drawPokemons(g);

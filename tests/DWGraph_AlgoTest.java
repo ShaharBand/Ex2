@@ -6,6 +6,10 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
+
+import api.DWGraph_Algo;
+import api.DWGraph_DS;
+import api.NodeData;
 import api.dw_graph_algorithms;
 import api.edge_data;
 import api.node_data;

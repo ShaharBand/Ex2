@@ -1,5 +1,4 @@
-import api.geo_location;
-
+package api;
 public class GeoLocation implements geo_location {
 	private double x;
 	private double y;
@@ -17,6 +16,12 @@ public class GeoLocation implements geo_location {
 		this.x = 0;
 		this.y = 0;
 		this.z = 0;
+	}
+	
+	public GeoLocation(geo_location loc) {
+		this.x = loc.x();
+		this.y = loc.y();
+		this.z = loc.z();
 	}
 
 	@Override

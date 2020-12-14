@@ -45,7 +45,7 @@ public class Arena {
 		this._agents = f;
 	}
 	public void setGraph(directed_weighted_graph g) {this._gg =g;}//init();}
-	private void init( ) {
+	private void init() {
 		MIN=null; MAX=null;
 		double x0=0,x1=0,y0=0,y1=0;
 		Iterator<node_data> iter = _gg.getV().iterator();

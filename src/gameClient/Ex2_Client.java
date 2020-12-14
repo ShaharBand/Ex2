@@ -1,12 +1,22 @@
 package gameClient;
 
 import Server.Game_Server_Ex2;
+import api.DWGraph_Algo;
+import api.DWGraph_DS;
+import api.GeoLocation;
 import api.directed_weighted_graph;
+import api.dw_graph_algorithms;
 import api.edge_data;
 import api.game_service;
+import api.geo_location;
+import api.node_data;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -15,6 +25,8 @@ import java.util.List;
 public class Ex2_Client implements Runnable{
 	private static MyFrame _win;
 	private static Arena _ar;
+	private static directed_weighted_graph currentGraph;
+	
 	public static void main(String[] a) {
 		Thread client = new Thread(new Ex2_Client());
 		client.start();
@@ -22,34 +34,38 @@ public class Ex2_Client implements Runnable{
 	
 	@Override
 	public void run() {
-		int scenario_num = 11;
-		game_service game = Game_Server_Ex2.getServer(scenario_num); // you have [0,23] games
-	//	int id = 999;
-	//	game.login(id);
-		String g = game.getGraph();
-		String pks = game.getPokemons();
-		directed_weighted_graph gg = game.getJava_Graph_Not_to_be_used();
-		init(game);
+		int level_number = 11;
+		game_service game = Game_Server_Ex2.getServer(level_number); // you have [0,23] games
 		
+		// int id = 209361310;
+		// game.login(id);
+
+		// initializing the game:
+		init(game);		
 		game.startGame();
-		_win.setTitle("Ex2 - OOP: (NONE trivial Solution) "+game.toString());
-		int ind=0;
+		_win.setTitle("Ex2 - OOP: (NONE trivial Solution) " + game.toString());
+		
+		int index = 0;
 		long dt=100;
 		
 		while(game.isRunning()) {
-			moveAgants(game, gg);
+			moveAgents(game);	// agents move according to their algorithms.
+			
+			// send update request to jframe every dt (100ms).
 			try {
-				if(ind%1==0) {_win.repaint();}
+				if(index%1 == 0) _win.repaint();
 				Thread.sleep(dt);
-				ind++;
+				index++;
 			}
 			catch(Exception e) {
 				e.printStackTrace();
 			}
 		}
-		String res = game.toString();
-
-		System.out.println(res);
+		
+		// once the game ended print the results
+		String gameResults = game.toString();
+		System.out.println(gameResults);
+		
 		System.exit(0);
 	}
 	/** 
@@ -59,24 +75,29 @@ public class Ex2_Client implements Runnable{
 	 * @param gg
 	 * @param
 	 */
-	private static void moveAgants(game_service game, directed_weighted_graph gg) {
-		String lg = game.move();
-		List<CL_Agent> log = Arena.getAgents(lg, gg);
-		_ar.setAgents(log);
-		//ArrayList<OOP_Point3D> rs = new ArrayList<OOP_Point3D>();
-		String fs =  game.getPokemons();
-		List<CL_Pokemon> ffs = Arena.json2Pokemons(fs);
-		_ar.setPokemons(ffs);
-		for(int i=0;i<log.size();i++) {
-			CL_Agent ag = log.get(i);
+	private static void moveAgents(game_service game) {
+		List<CL_Agent> agentList = Arena.getAgents(game.move(), currentGraph);
+		ArrayList<CL_Pokemon> pokemonList = Arena.json2Pokemons(game.getPokemons());
+		
+		_ar.setAgents(agentList);
+		_ar.setPokemons(pokemonList);
+		
+		for(int i=0; i < agentList.size(); i++) {
+			CL_Agent ag = agentList.get(i);
+			
 			int id = ag.getID();
 			int dest = ag.getNextNode();
 			int src = ag.getSrcNode();
 			double v = ag.getValue();
-			if(dest==-1) {
-				dest = nextNode(gg, src);
+			
+			if(dest==-1) { // reached is target and needs to find a new one
+				// get all pokemons
+				// go through all agents mark all pokemon they marked out
+				// search from that list the closest one to you
+				// go to it
+				dest = nextNode(currentGraph, src);
 				game.chooseNextEdge(ag.getID(), dest);
-				System.out.println("Agent: "+id+", val: "+v+"   turned to node: "+dest);
+				System.out.println("Agent: "+ id + ", value: " + v + "\t turned to node: " + dest);
 			}
 		}
 	}
@@ -97,40 +118,70 @@ public class Ex2_Client implements Runnable{
 		ans = itr.next().getDest();
 		return ans;
 	}
-	private void init(game_service game) {
-		String g = game.getGraph();
-		String fs = game.getPokemons();
-		directed_weighted_graph gg = game.getJava_Graph_Not_to_be_used();
-		//gg.init(g);
-		_ar = new Arena();
-		_ar.setGraph(gg);
-		_ar.setPokemons(Arena.json2Pokemons(fs));
-		_win = new MyFrame("test Ex2");
-		_win.setSize(1000, 700);
-		_win.update(_ar);
-
 	
+	private void init(game_service game) {
+		ArrayList<CL_Pokemon> pokemonList = Arena.json2Pokemons(game.getPokemons());
+		
+		// Graph initialization:
+		dw_graph_algorithms algoGraph = new DWGraph_Algo();
+		
+		String fileName = "currentGraph.json";
+		createFile(fileName, game.getGraph());
+		algoGraph.load(fileName);
+		
+		currentGraph = algoGraph.getGraph();
+		
+		// Arena initialization:
+		_ar = new Arena();
+		_ar.setGraph(currentGraph);
+		_ar.setPokemons(pokemonList);
+		
+		// JFrame initialization:
+		_win = new MyFrame("EX2 OOP: Game window");
+		_win.setSize(500, 500);
+		_win.setDefaultCloseOperation(_win.EXIT_ON_CLOSE);
 		_win.show();
-		String info = game.toString();
+		_win.update(_ar);
+		
 		JSONObject line;
 		try {
-			line = new JSONObject(info);
-			JSONObject ttt = line.getJSONObject("GameServer");
-			int rs = ttt.getInt("agents");
-			System.out.println(info);
-			System.out.println(game.getPokemons());
-			int src_node = 0;  // arbitrary node, you should start at one of the pokemon
-			ArrayList<CL_Pokemon> cl_fs = Arena.json2Pokemons(game.getPokemons());
-			for(int a = 0;a<cl_fs.size();a++) { Arena.updateEdge(cl_fs.get(a),gg);}
-			for(int a = 0;a<rs;a++) {
-				int ind = a%cl_fs.size();
-				CL_Pokemon c = cl_fs.get(ind);
-				int nn = c.get_edge().getDest();
-				if(c.getType()<0 ) {nn = c.get_edge().getSrc();}
+			line = new JSONObject(game.toString());
+			JSONObject serverObject = line.getJSONObject("GameServer");
+			int amountOfAgents = serverObject.getInt("agents");
+
+			for(int i = 0; i < pokemonList.size(); i++) Arena.updateEdge(pokemonList.get(i), currentGraph);
+			
+			for(int i = 0; i < amountOfAgents; i++) {
 				
-				game.addAgent(nn);
+				// Calculating which starting point is the closest to start with for the first pokemons
+
+				CL_Pokemon c = pokemonList.get(i);
+				geo_location loc = new GeoLocation(c.getLocation());
+				
+				node_data src_node = currentGraph.getNode(c.get_edge().getSrc());
+				node_data dest_node = currentGraph.getNode(c.get_edge().getDest());
+				int spawnpoint = 0;
+				
+				if(loc.distance(src_node.getLocation()) > loc.distance(dest_node.getLocation()))
+					spawnpoint = c.get_edge().getDest();
+				else spawnpoint = c.get_edge().getSrc();
+				
+				game.addAgent(spawnpoint);
 			}
 		}
-		catch (JSONException e) {e.printStackTrace();}
+		catch (JSONException e) { e.printStackTrace();}
+	}
+	
+	// creates a txt file by given name and contains given string.
+	public void createFile(String file, String txt) {
+		try {
+			new File(file);
+			FileWriter writer = new FileWriter(file);
+			writer.write(txt);
+			writer.close();
+		}
+		catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 }
