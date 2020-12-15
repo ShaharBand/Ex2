@@ -42,8 +42,6 @@ public class Ex2_Client implements Runnable{
 
 		// initializing the game:
 		init(game);		
-		game.startGame();
-		_win.setTitle("Ex2 - OOP: (NONE trivial Solution) " + game.toString());
 		
 		int index = 0;
 		long dt=100;
@@ -108,6 +106,11 @@ public class Ex2_Client implements Runnable{
 	 * @return
 	 */
 	private static int nextNode(directed_weighted_graph g, int src) {
+		
+		/*List<CL_Agent> agentList = Arena.getAgents(game.move(), currentGraph);
+		CL_Pokemon test;
+		//test.
+		//*/
 		int ans = -1;
 		Collection<edge_data> ee = g.getE(src);
 		Iterator<edge_data> itr = ee.iterator();
@@ -137,7 +140,7 @@ public class Ex2_Client implements Runnable{
 		_ar.setPokemons(pokemonList);
 		
 		// JFrame initialization:
-		_win = new MyFrame("EX2 OOP: Game window");
+		_win = new MyFrame("window");
 		_win.setSize(500, 500);
 		_win.setDefaultCloseOperation(_win.EXIT_ON_CLOSE);
 		_win.show();
@@ -152,7 +155,6 @@ public class Ex2_Client implements Runnable{
 			for(int i = 0; i < pokemonList.size(); i++) Arena.updateEdge(pokemonList.get(i), currentGraph);
 			
 			for(int i = 0; i < amountOfAgents; i++) {
-				
 				// Calculating which starting point is the closest to start with for the first pokemons
 
 				CL_Pokemon c = pokemonList.get(i);
@@ -170,9 +172,12 @@ public class Ex2_Client implements Runnable{
 			}
 		}
 		catch (JSONException e) { e.printStackTrace();}
+		
+		game.startGame();
+		_win.setTitle("Ex2 - OOP: (NONE trivial Solution) " + game.toString());
 	}
 	
-	// creates a txt file by given name and contains given string.
+	// creates a text file by given name and contains given string.
 	public void createFile(String file, String txt) {
 		try {
 			new File(file);

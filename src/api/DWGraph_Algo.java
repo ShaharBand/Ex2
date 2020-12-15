@@ -23,6 +23,11 @@ public class DWGraph_Algo implements dw_graph_algorithms {
 
 	private directed_weighted_graph graph;
 	
+    /**
+     * Init the graph on which this set of algorithms operates on.
+     *
+     * @param g
+     */
 	@Override
 	public void init(directed_weighted_graph g) {
 		this.graph = g;
@@ -62,7 +67,13 @@ public class DWGraph_Algo implements dw_graph_algorithms {
 		return deep;
 	}
 
-	// DFS, doing a BFS on a node, then fliping the edges and doing it again.
+    /**
+     * Returns true if and only if (iff) there is a valid path from each node to each
+     * other node.
+     * using Depth-first search algorithm to measure validation.
+     * 
+     * @return
+     */
 	@Override
 	public boolean isConnected() {
 		if(this.graph.nodeSize() < 2)return true;
@@ -84,6 +95,10 @@ public class DWGraph_Algo implements dw_graph_algorithms {
 		return true;
 	}
 	
+    /**
+     * flips the given graph edges by deep copy and flip the edges.
+     * used in isConnected algorithm to become Depth-first search from Breadth-first search.
+     */
 	private void FlipGraph()
 	{
 		node_data currentNode;
@@ -126,41 +141,48 @@ public class DWGraph_Algo implements dw_graph_algorithms {
 		if(counter != ga.getGraph().nodeSize())return false;
 		return true;
 	}
-    // returns the shortest distance between 2 nodes in the graph by using BFS search with Priority Queue.
-    // by using the tag we can calculate the distance value of each node and by going through the search using Priority Queue
-    // this logic becomes Dijkstra's Algorithm!
 
+    /**
+     * The method go through the vertices from the start node to the destination node
+     * by using Dijkstra's Algorithm (using BFS search with Priority Queue which counts the values).
+     * returns the length of the shortest path between src to dest
+     * this method is for weighted graph.
+     * if no such path --> returns -1
+     *
+     * @param src  - start node
+     * @param dest - end (target) node
+     */
 	@Override
 	public double shortestPathDist(int src, int dest) {
 		if(this.graph.nodeSize() < 2)return 0;
 		resetGraph();
 		
-		PriorityQueue<node_data> pq = new PriorityQueue<>(new CounterComparator()); 	
+		PriorityQueue<node_data> pq = new PriorityQueue<>(new weightComparator()); 	
 		node_data currentNode = graph.getNode(src), neighbor;
 		
-		((DWGraph_DS)graph).setCounter(src, 0);
+		graph.getNode(src).setWeight(0);
+
 		pq.add(currentNode);
 		
 		while(!pq.isEmpty()) {
 			currentNode = pq.poll();
-	    	if(currentNode.getKey() == dest)return ((NodeData)currentNode).getCounter();
+	    	if(currentNode.getKey() == dest)return ((NodeData)currentNode).getWeight();
 	    	
 			Iterator<node_data> iterator = ((DWGraph_DS)this.graph).getV(currentNode.getKey()).iterator();
 			while (iterator.hasNext()) {
 			    neighbor = iterator.next();  
 				
-				if(((NodeData)neighbor).getCounter() == -1 || pq.contains(neighbor)) {
-					
-					// value of the path weight
-					double weightValue=//neighbor.getWeight() + 
-							((NodeData)currentNode).getCounter() + 
-							((DWGraph_DS)graph).getEdge(currentNode.getKey(), neighbor.getKey()).getWeight();
+				if(neighbor.getWeight() == -1 || pq.contains(neighbor)) {
+
+					double weightValue=
+							currentNode.getWeight() + 
+							graph.getEdge(currentNode.getKey(), neighbor.getKey()).getWeight();
 					
 					if(pq.contains(neighbor)) {
-						if(((NodeData)neighbor).getCounter() < weightValue) continue;
+						if(neighbor.getWeight() < weightValue) continue;
 					}
 									
-					((NodeData)neighbor).setCounter(weightValue);
+					neighbor.setWeight(weightValue);
 			    	pq.add(neighbor);
 			    }
 			}
@@ -180,10 +202,11 @@ public class DWGraph_Algo implements dw_graph_algorithms {
 		resetGraph();
 		
 		HashMap<Integer, node_data> parents = new HashMap<Integer, node_data>();
-		PriorityQueue<node_data> pq = new PriorityQueue<>(new CounterComparator()); 	
+		PriorityQueue<node_data> pq = new PriorityQueue<>(new weightComparator()); 	
 		node_data currentNode = graph.getNode(src), neighbor;
 		
-		((DWGraph_DS)graph).setCounter(src, 0);
+		graph.getNode(src).setWeight(0);
+
 		pq.add(currentNode);
 		
 		while(!pq.isEmpty()) {
@@ -208,18 +231,17 @@ public class DWGraph_Algo implements dw_graph_algorithms {
 			while (iterator.hasNext()) {
 			    neighbor = iterator.next();  
 				
-				if(((DWGraph_DS)graph).getCounter(neighbor.getKey()) == -1 || pq.contains(neighbor)) {
-					
-					// value of the path weight
-					double weightValue=//neighbor.getWeight() + 
-							((NodeData)currentNode).getCounter() + 
-							((DWGraph_DS)graph).getEdge(currentNode.getKey(), neighbor.getKey()).getWeight();
+				if(neighbor.getWeight() == -1 || pq.contains(neighbor)) {
+
+					double weightValue=
+							currentNode.getWeight() + 
+							graph.getEdge(currentNode.getKey(), neighbor.getKey()).getWeight();
 					
 					if(pq.contains(neighbor)) {
-						if(((DWGraph_DS)graph).getCounter(neighbor.getKey()) < weightValue) continue;
+						if(neighbor.getWeight() < weightValue) continue;
 					}
 									
-					((NodeData)neighbor).setCounter(weightValue);
+					neighbor.setWeight(weightValue);
 					parents.put(neighbor.getKey(), currentNode); // Making a HashMap where the parent is contained in the key of its child's
 				
 			    	pq.add(neighbor);
@@ -329,18 +351,18 @@ public class DWGraph_Algo implements dw_graph_algorithms {
 		while (iterator.hasNext()) {
 			node_data node = iterator.next();
 			node.setTag(-1);
-			((DWGraph_DS)graph).setCounter(node.getKey(), -1);			
+			node.setWeight(-1);		
 		}
 	}
 
 	// for priority queue
-	public class CounterComparator implements Comparator<node_data>{
+	public class weightComparator implements Comparator<node_data>{
 
 		@Override
 		public int compare(node_data a, node_data b) {    
-	        if(((DWGraph_DS)graph).getCounter(a.getKey()) > ((DWGraph_DS)graph).getCounter(b.getKey()))
+	        if(a.getWeight() > b.getWeight())
 	            return 1;
-	        else if(((DWGraph_DS)graph).getCounter(a.getKey()) == ((DWGraph_DS)graph).getCounter(b.getKey()))
+	        else if(a.getWeight() == b.getWeight())
 	             return 0;
 	         return -1;
 	    }

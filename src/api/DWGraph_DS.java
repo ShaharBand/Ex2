@@ -104,13 +104,5 @@ public class DWGraph_DS implements directed_weighted_graph {
 	@Override
 	public int getMC() {
 		return this.modeCount;
-	}
-	
-	public double getCounter(int key) {
-		return ((NodeData)getNode(key)).getCounter();
-	}
-	public void setCounter(int key, double c) {
-		((NodeData)getNode(key)).setCounter(c);
-	}
-	
+	}	
 }

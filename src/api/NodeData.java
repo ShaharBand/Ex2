@@ -10,7 +10,6 @@ public class NodeData implements node_data {
 	private int tag;
 	private int key;
 	private double weight;
-	private double counter; //counter for weight in algorithm
 	private geo_location location = new GeoLocation();
 	
 	public NodeData(){
@@ -33,15 +32,7 @@ public class NodeData implements node_data {
 		this.location = n.getLocation();
 		this.edges = new HashMap<Integer, edge_data>();
 	}
-
-	public double getCounter() {
-		return this.counter;
-	}
 	
-	public void setCounter(double c) {
-		this.counter = c;
-	}
-
 	// return the edge from current node to 'key' as dest.
 	public edge_data getEdge(int key) {
 		if(!edges.containsKey(key))return null;

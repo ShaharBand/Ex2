@@ -17,7 +17,7 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * This class represents a multi Agents Arena which move on a graph - grabs Pokemons and avoid the Zombies.
+ * This class represents a multi Agents Arena which move on a graph - grabs Pokemons.
  * @author boaz.benmoshe
  *
  */
@@ -76,41 +76,47 @@ public class Arena {
 		this._info = _info;
 	}
 
-	////////////////////////////////////////////////////
-	public static List<CL_Agent> getAgents(String aa, directed_weighted_graph gg) {
-		ArrayList<CL_Agent> ans = new ArrayList<CL_Agent>();
+	// this function converts the game json data into the agent list
+	public static List<CL_Agent> getAgents(String jsonTxt, directed_weighted_graph graph) {
+		ArrayList<CL_Agent> agentList = new ArrayList<CL_Agent>();
+		
 		try {
-			JSONObject ttt = new JSONObject(aa);
-			JSONArray ags = ttt.getJSONArray("Agents");
-			for(int i=0;i<ags.length();i++) {
-				CL_Agent c = new CL_Agent(gg,0);
-				c.update(ags.get(i).toString());
-				ans.add(c);
+			JSONObject data = new JSONObject(jsonTxt);
+			JSONArray amountOfAgents = data.getJSONArray("Agents");
+			
+			for(int i=0; i < amountOfAgents.length(); i++) {
+				CL_Agent agent = new CL_Agent(graph,0);
+				agent.update(amountOfAgents.get(i).toString());
+				agentList.add(agent);
 			}
-			//= getJSONArray("Agents");
-		} catch (JSONException e) {
+		} 
+		catch (JSONException e) {
 			e.printStackTrace();
 		}
-		return ans;
+		return agentList;
 	}
 	public static ArrayList<CL_Pokemon> json2Pokemons(String fs) {
-		ArrayList<CL_Pokemon> ans = new  ArrayList<CL_Pokemon>();
+		ArrayList<CL_Pokemon> pokemonList = new  ArrayList<CL_Pokemon>();
+		
 		try {
 			JSONObject ttt = new JSONObject(fs);
 			JSONArray ags = ttt.getJSONArray("Pokemons");
 			for(int i=0;i<ags.length();i++) {
 				JSONObject pp = ags.getJSONObject(i);
 				JSONObject pk = pp.getJSONObject("Pokemon");
+				
 				int t = pk.getInt("type");
 				double v = pk.getDouble("value");
 				//double s = 0;//pk.getDouble("speed");
 				String p = pk.getString("pos");
-				CL_Pokemon f = new CL_Pokemon(new Point3D(p), t, v, 0, null);
-				ans.add(f);
+				CL_Pokemon pokemon = new CL_Pokemon(new Point3D(p), t, v, 0, null);
+				pokemonList.add(pokemon);
 			}
 		}
-		catch (JSONException e) {e.printStackTrace();}
-		return ans;
+		catch (JSONException e) { 
+			e.printStackTrace(); 
+		}
+		return pokemonList;
 	}
 	public static void updateEdge(CL_Pokemon fr, directed_weighted_graph g) {
 		//	oop_edge_data ans = null;
