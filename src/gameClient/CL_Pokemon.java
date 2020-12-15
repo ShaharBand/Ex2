@@ -20,18 +20,27 @@ public class CL_Pokemon {
 
 	//public String toString() {return "Pokemon: value = " + _value + ", Type =" + _type + "";}
 	
-	public edge_data get_edge() {
-		return _edge;
-	}
-
 	public void set_edge(edge_data _edge) {
 		this._edge = _edge;
 	}
 
-	public Point3D getLocation() {
-		return location;
+	public edge_data get_edge() {
+		return this._edge;
 	}
-	public int getType() {return _type;}
+	
+	public Point3D getLocation() {
+		return this.location;
+	}
+	
+	public int getType() {
+		return this._type;
+	}
 
-	public double getValue() { return _value;}
+	public double getValue() { 
+		return this._value;
+	}
+	
+	public boolean getTargeted() {
+		return this.targeted;
+	}
 }

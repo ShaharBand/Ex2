@@ -214,17 +214,14 @@ public class DWGraph_Algo implements dw_graph_algorithms {
 			
 			if(currentNode.getKey() == dest) { // found --> go by the helping HashMap and find parents from bottom to top and put them in the list.
 				List<node_data> path = new ArrayList<node_data>();
-		        while(currentNode != graph.getNode(src)) { //while we have parent
+				
+		        while(currentNode != graph.getNode(src)) { // while we have parent
 		        	path.add(currentNode);
 		        	currentNode = parents.get(currentNode.getKey());
 		        }
 		        path.add(graph.getNode(src));
-		        // reverse order to top to bottom:
-		        List<node_data> path2 = new ArrayList<node_data>(); 
-		        for (int i = path.size()-1; i >= 0; i--) 
-		        	path2.add(path.get(i)); 
 		        
-		        return path2;
+		        return reverseList(path);
 			}	
 			
 			Iterator<node_data> iterator = ((DWGraph_DS)this.graph).getV(currentNode.getKey()).iterator();
@@ -355,6 +352,17 @@ public class DWGraph_Algo implements dw_graph_algorithms {
 		}
 	}
 
+	// reverse list:
+	private <T> List<T> reverseList(List<T> list)
+	{
+        List<T> reversed = new ArrayList<T>(); 
+        
+        for (int i = list.size()-1; i >= 0; i--) 
+        	reversed.add(list.get(i)); 
+        
+		return list;	
+	}
+	
 	// for priority queue
 	public class weightComparator implements Comparator<node_data>{
 
