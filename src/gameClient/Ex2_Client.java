@@ -22,6 +22,8 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.swing.ImageIcon;
+
 public class Ex2_Client implements Runnable{
 	private static MyFrame _win;
 	private static Arena _ar;
@@ -140,7 +142,9 @@ public class Ex2_Client implements Runnable{
 		_ar.setPokemons(pokemonList);
 		
 		// JFrame initialization:
-		_win = new MyFrame("window");
+		_win = new MyFrame("Pokemon Game!");
+		ImageIcon image_icon = new ImageIcon("images/Icon.jpg");
+		_win.setIconImage(image_icon.getImage());
 		_win.setSize(500, 500);
 		_win.setDefaultCloseOperation(_win.EXIT_ON_CLOSE);
 		_win.show();
@@ -174,7 +178,6 @@ public class Ex2_Client implements Runnable{
 		catch (JSONException e) { e.printStackTrace();}
 		
 		game.startGame();
-		_win.setTitle("Ex2 - OOP: (NONE trivial Solution) " + game.toString());
 	}
 	
 	// creates a text file by given name and contains given string.
