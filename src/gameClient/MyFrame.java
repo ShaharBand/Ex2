@@ -103,13 +103,31 @@ public class MyFrame extends JFrame{
         }	
 	}
 	private void drawInfo(Graphics g) {
-		List<String> str = _ar.get_info();
-		String dt = "none";
-	    
-		//System.out.println();
-		for(int i=0; i < str.size(); i++) {
-			g.drawString(str.get(i) + " dt: " + dt, 100, 60 + i*20);
+		
+		List<CL_Agent> agentList = _ar.getAgents();
+		int total_Score = 0;
+		g.setFont(new Font("Ariel", Font.PLAIN, 12));
+		
+		if(agentList != null) {
+			int i = 0;
+			Iterator<CL_Agent> itr = agentList.iterator();
+			
+			g.drawString("Agents:", 10, 80);
+			while(itr.hasNext()) {
+				CL_Agent agent = itr.next();
+				int agent_id = agent.getID();
+
+				String agentInfo = "ID: " + agent.getID() + ", Score:" + agent.getValue() + 
+						", Speed: " + agent.getSpeed();
+				if(agent_id >= 0) 
+					g.drawString(agentInfo, 10,100 + 15 * i);
+				
+				total_Score += agent.getValue();
+				i++;
+			}
 		}
+		g.setFont(new Font("Ariel", Font.BOLD, 12));
+		g.drawString("Total Score: " + total_Score, 10,50);
 	}
 	
 	private void drawGraph(Graphics g) {
