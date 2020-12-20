@@ -27,15 +27,15 @@ public class DWGraph_DS implements directed_weighted_graph {
 	public void addNode(node_data n) {
 		if(nodes.containsKey(n.getKey()))return;
 		nodes.put(n.getKey(), n);
-		modeCount++;
+		this.modeCount++;
 	}
 
 	@Override
 	public void connect(int src, int dest, double w) {
 		if(!nodes.containsKey(src) || !nodes.containsKey(dest) || src == dest) return;
 		((NodeData)getNode(src)).addEdge(dest, w);
-		modeCount++;
-		amountOfEdges++;
+		this.modeCount++;
+		this.amountOfEdges++;
 	}
 
 	// return the neighbors collection of this specific key (node).
@@ -71,7 +71,7 @@ public class DWGraph_DS implements directed_weighted_graph {
 			node_data node = iterator.next();
 		    if(((NodeData)node).removeEdge(getNode(key).getKey())) 
 		    {
-			    amountOfEdges--;
+		    	this.amountOfEdges--;
 			    modeCount++;
 		   }
 		}
@@ -85,6 +85,7 @@ public class DWGraph_DS implements directed_weighted_graph {
 	@Override
 	public edge_data removeEdge(int src, int dest) {
 		if(!nodes.containsKey(src) || !nodes.containsKey(dest)) return null;
+		if(getEdge(src, dest) == null)return null;
 		
 		edge_data data = ((NodeData)getNode(src)).getEdge(dest);
 		((NodeData)getNode(src)).removeEdge(getNode(dest).getKey());
