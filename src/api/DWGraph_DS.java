@@ -88,6 +88,8 @@ public class DWGraph_DS implements directed_weighted_graph {
 		
 		edge_data data = ((NodeData)getNode(src)).getEdge(dest);
 		((NodeData)getNode(src)).removeEdge(getNode(dest).getKey());
+		modeCount++;
+		this.amountOfEdges--;
 		return data;
 	}
 

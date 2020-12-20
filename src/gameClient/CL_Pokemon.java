@@ -3,6 +3,9 @@ import api.edge_data;
 import gameClient.util.Point3D;
 import org.json.JSONObject;
 
+/**
+ * This class is responsible for the pokemon information.
+ */
 public class CL_Pokemon {
 	private edge_data _edge;
 	private double _value;
@@ -15,11 +18,9 @@ public class CL_Pokemon {
 		_value = v;
 		set_edge(e);
 		this.location = location;
-		targeted = false;
+		this.targeted = false;
 	}
 
-	//public String toString() {return "Pokemon: value = " + _value + ", Type =" + _type + "";}
-	
 	public void set_edge(edge_data _edge) {
 		this._edge = _edge;
 	}
@@ -38,6 +39,10 @@ public class CL_Pokemon {
 
 	public double getValue() { 
 		return this._value;
+	}
+	
+	public void setTargeted(boolean targeted) {
+		this.targeted = targeted;
 	}
 	
 	public boolean getTargeted() {

@@ -23,7 +23,7 @@ import java.util.List;
  */
 public class Arena {
 	public static final double EPS1 = 0.001, EPS2=EPS1*EPS1, EPS=EPS2;
-	private directed_weighted_graph _gg;
+	private static directed_weighted_graph _gg;
 	private List<CL_Agent> _agents;
 	private List<CL_Pokemon> _pokemons;
 	private List<String> _info;
@@ -41,10 +41,15 @@ public class Arena {
 	public void setPokemons(List<CL_Pokemon> f) {
 		this._pokemons = f;
 	}
+	
 	public void setAgents(List<CL_Agent> f) {
 		this._agents = f;
 	}
-	public void setGraph(directed_weighted_graph g) {this._gg =g;}//init();}
+	
+	public void setGraph(directed_weighted_graph g) {
+		this._gg =g;
+	}
+	
 	private void init() {
 		MIN=null; MAX=null;
 		double x0=0,x1=0,y0=0,y1=0;
@@ -62,16 +67,23 @@ public class Arena {
 		MAX = new Point3D(x1+dx/10,y1+dy/10);
 		
 	}
-	public List<CL_Agent> getAgents() {return _agents;}
-	public List<CL_Pokemon> getPokemons() {return _pokemons;}
-
+	
+	public List<CL_Agent> getAgents() {
+		return _agents;
+	}
+	
+	public List<CL_Pokemon> getPokemons() {
+		return _pokemons;
+	}
 	
 	public directed_weighted_graph getGraph() {
 		return _gg;
 	}
+	
 	public List<String> get_info() {
 		return _info;
 	}
+	
 	public void set_info(List<String> _info) {
 		this._info = _info;
 	}
@@ -111,6 +123,7 @@ public class Arena {
 				String p = pk.getString("pos");
 				CL_Pokemon pokemon = new CL_Pokemon(new Point3D(p), t, v, 0, null);
 				pokemonList.add(pokemon);
+				updateEdge(pokemon, _gg);
 			}
 		}
 		catch (JSONException e) { 
@@ -118,22 +131,23 @@ public class Arena {
 		}
 		return pokemonList;
 	}
-	public static void updateEdge(CL_Pokemon fr, directed_weighted_graph g) {
-		//	oop_edge_data ans = null;
+	public static void updateEdge(CL_Pokemon pokemon, directed_weighted_graph g) {
+		if(g == null)return;
 		Iterator<node_data> itr = g.getV().iterator();
 		while(itr.hasNext()) {
 			node_data v = itr.next();
 			Iterator<edge_data> iter = g.getE(v.getKey()).iterator();
 			while(iter.hasNext()) {
 				edge_data e = iter.next();
-				boolean f = isOnEdge(fr.getLocation(), e,fr.getType(), g);
-				if(f) {fr.set_edge(e);}
+				boolean isPokemonOnEdge = isOnEdge(pokemon.getLocation(), e, pokemon.getType(), g);
+				if(isPokemonOnEdge) {
+					pokemon.set_edge(e);
+				}
 			}
 		}
 	}
 
-	private static boolean isOnEdge(geo_location p, geo_location src, geo_location dest ) {
-
+	private static boolean isOnEdge(geo_location p, geo_location src, geo_location dest) {
 		boolean ans = false;
 		double dist = src.distance(dest);
 		double d1 = src.distance(p) + p.distance(dest);
@@ -180,5 +194,4 @@ public class Arena {
 		Range2Range ans = new Range2Range(world, frame);
 		return ans;
 	}
-
 }

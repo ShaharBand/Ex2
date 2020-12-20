@@ -254,6 +254,8 @@ public class MyFrame extends JFrame{
 				int centerY = (int)(frame_position.y() - (image_height / scale) / 2);
 				
 				g.drawImage(trainerImage, centerX, centerY, image_width/scale, image_height/scale, this);
+				
+				g.drawString("ID: " + agentList.get(i-1).getID(), (int)frame_position.x()+10, (int)frame_position.y()-10);
 			}
 		}
 	}
