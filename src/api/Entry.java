@@ -5,6 +5,9 @@ public class Entry<T,K> implements Comparable<Entry> {
     private double value;
     private K value2;
 
+    /**
+     * This class is responsible to indicate a key which contains value to be implemented in priority queue.
+     */
     public Entry(T key, K value2, double value) {
         this.key = key;
         this.value = value;
