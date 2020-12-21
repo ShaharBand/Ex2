@@ -28,11 +28,11 @@ public class MyFrame extends JFrame{
 	private long time = 0;
 	private static MainMenu panel;
 	
-	private Image backgroundImage = new ImageIcon("images/Game_Background.jpg").getImage();
-	private Image nodeImage = new ImageIcon("images/Node.png").getImage();
-	private Image trainerImage = new ImageIcon("images/Trainer.png").getImage();
+	private Image backgroundImage = new ImageIcon("/images/Game_Background.jpg").getImage();
+	private Image nodeImage = new ImageIcon("/images/Node.png").getImage();
+	private Image trainerImage = new ImageIcon("/images/Trainer.png").getImage();
 	private Image pokemonsImage[] = new Image[] {
-			new ImageIcon("images/pokemon0.png").getImage(),new ImageIcon("images/pokemon1.png").getImage()
+			new ImageIcon("/images/pokemon0.png").getImage(),new ImageIcon("/images/pokemon1.png").getImage()
 	};
 	
 	MyFrame(String a) {
@@ -115,6 +115,7 @@ public class MyFrame extends JFrame{
 		
 		g.dispose();
 	}
+	
 	public long setTime(long t) {
 		return this.time = t;
 	}
@@ -320,7 +321,7 @@ public class MyFrame extends JFrame{
             
             this.add(title);
             
-            title = new JLabel("   © Shahar Band, Lior Cohen");
+            title = new JLabel("   ï¿½ Shahar Band, Lior Cohen");
             title.setFont(new Font("Tahoma", Font.BOLD, 14));
             title.setBounds(0, 0, 210, 16);
             title.setLocation(this.getWidth() / 2 - 105, this.getHeight() / 2 + 15);
